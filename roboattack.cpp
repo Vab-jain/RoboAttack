@@ -58,3 +58,13 @@ void find_path(int G[N][N], int n, int a, int b)	//n = total no. of vertices		a 
 		}
 	}
 }
+
+int path_size(int b)	//final destination (robot) node
+{
+	int size=0;
+	while(path[size]!=b)
+	{
+		size++;
+	}
+	return size;
+}
