@@ -77,16 +77,16 @@ int main()
 	int RobotPosition[k];  // to store the positions of the robots in the kingdom
 	int G[N][N]={ };  // adjacency matrix of the graph which stores the weight b/w the vertices
 	int v1, v2, w; // (v1,v2) is an edge of the graph
-	for(int i=0;i<n-1;i++)  // initializing the graph with weights 
+	for(int j=0;j<n-1;j++)  // initializing the graph with weights 
 	{
 		cin>>v1>>v2>>w;  
 		G[v1][v2]=w;
 		G[v2][v1]=w;
 	}
 	cout<<"t";
-	for(int i=0;i<k;i++)  //getting the position of the robots
+	for(int j=0;j<k;j++)  //getting the position of the robots
 	{	cout<"t";
-		cin>>RobotPosition[i];
+		cin>>RobotPosition[j];
 	}
 	int time;
 	cout<<"t";
