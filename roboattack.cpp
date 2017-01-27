@@ -38,6 +38,7 @@ G =   4 |0 0 0 0 0 0 4 0 0  0
 
 int path[N] = {};	//path between any two robots
 int i=0;			//counter for path[i]
+int flag = 0;   // to check whether the path is found or not
 
 void find_path(int G[N][N], int n, int a, int b)	//n = total no. of vertices		a = robo1		b = robo2
 {
@@ -52,19 +53,12 @@ void find_path(int G[N][N], int n, int a, int b)	//n = total no. of vertices		a 
 				{
 					i++;
 					find_path(G[N][N],n,j,b);
-					i--;
+					if(flag==0)
+						i--;
 				}
 			}
 		}
+		else 
+			flag++;
 	}
-}
-
-int path_size(int b)	//final destination (robot) node
-{
-	int size=0;
-	while(path[size]!=b)
-	{
-		size++;
-	}
-	return size;
 }
