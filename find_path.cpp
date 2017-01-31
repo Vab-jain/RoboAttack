@@ -8,7 +8,8 @@ int flag = 0;   // to check whether the path is found or not
 int flag1=0;
 void find_path(int G[100][100], int n, int a, int b)	//n = total no. of vertices		a = robo1		b = robo2
 {	
-		if(path[i-2]!=a)
+	if(i>=2)
+	{	if(path[i-2]!=a)
 		{
 			
 			path[i] = a;
@@ -19,22 +20,43 @@ void find_path(int G[100][100], int n, int a, int b)	//n = total no. of vertices
 			
 					if(G[a][j]>0)
 					{
-						if(flag1==0)
-						{	i++;
+					//	if(flag1==0)
+							i++;
 					
 							find_path(G,n,j,b);
 							if(flag==0)
 								i--;
 							else 
 								return;
-						}
-						flag1=0;
+					//	}
+					//	flag1=0;
 					}
 				}
 			}
 			else 
 				flag++;
 		}
+	}
+	else{
+		path[i]=a;
+		for(int j=0; j<n; j++)
+				{	
+			
+					if(G[a][j]>0)
+					{
+					//	if(flag1==0)
+							i++;
+					
+							find_path(G,n,j,b);
+							if(flag==0)
+								i--;
+							else 
+								return;
+					//	}
+					//	flag1=0;
+					}
+				}
+	}
 	}
 
 int main()
@@ -51,11 +73,11 @@ int main()
 		G[v1][v2]=w;
 		G[v2][v1]=w;
 	}
-	for(int j=0 ;j<n;j++)
-	{	for(int m=0;m<n;m++)
-			cout<<G[j][m]<<" ";
-		cout<<endl;
-	}
+	//for(int j=0 ;j<n;j++)
+///	{	for(int m=0;m<n;m++)
+	//		cout<<G[j][m]<<" ";
+	//	cout<<endl;
+	//}
 	for(int j=0;j<k;j++)  //getting the position of the robots
 	{	
 		cin>>RobotPosition[j];
