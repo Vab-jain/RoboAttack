@@ -1,14 +1,15 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 //#define N 1000
 
-int G[10000][10000]={ };  // adjacency matrix of the graph which stores the weight b/w the vertices
-int path[1000];	//path between any two robots
+vector < vector<int>> G;  // adjacency matrix of the graph which stores the weight b/w the vertices
+vector<int> path;	//path between any two robots
 int i=0;			//counter for path[i]
 int flag = 0;   // to check whether the path is found or not
-//int flag1=0;
+
 void find_path(int n, int a, int b)	//n = total no. of vertices		a = robo1		b = robo2
 {	
 	if(i>=2)
@@ -68,7 +69,7 @@ void find_path(int n, int a, int b)	//n = total no. of vertices		a = robo1		b = 
 
 
 /* function to delete the minimum cost edge in the given path and delete if*/
-int DELETE_MIN(int Path[], int PathSize)
+int DELETE_MIN(vector<int> &Path, int PathSize)
 {
 	int v1 = Path[0], v2 = Path[1], w = G[Path[0]][Path[1]]; // (v1,v2) is an edge in the path corresponding to the minimum weight in the path
 	for(int c=0 ; c<PathSize-1 ; c++)  
@@ -91,7 +92,7 @@ int DELETE_MIN(int Path[], int PathSize)
 
 /*function for finding the minimum edge in the for all the paths b/w the robot positions and delete the edges 
 and return the minimum time required to delete all the edges*/
-int MIN_EDGE_CUTTING_TIME(int k, int RobotPosition[], int no_of_vertex)
+int MIN_EDGE_CUTTING_TIME(int k, vector<int> RobotPosition, int no_of_vertex)
 {
 	//cout<<"\nEntering MIN_EDGE_CUTTING_TIME function\n";
 	int MinTime=0;  // variable to store the time taken for destroying the all edges to save kingdom
@@ -121,19 +122,29 @@ int main()
 	cin>>n;
 	//cout<<"\nEnter no. of robots\n";
 	cin>>k;
-	int RobotPosition[k];  // to store the positions of the robots in the kingdom
-	int v1, v2, w; // (v1,v2) is an edge of the graph
+
+	vector<int> RobotPosition;  // to store the positions of the robots in the kingdom
+	//set size if G, RobotPosition, Path
+	G.resize(n);
+    for(int i=0; i<n;i++)
+    {
+        G[i].resize(n);
+    }
+	path.resize(n);
+    RobotPosition.resize(k);
+
+	int v1, v2, w, r; // (v1,v2) is an edge of the graph
 	//cout<<"\nEnter edges\n";
-	for(int j1=0;j1<n-1;j1++)  // initializing the graph with weights 
+	for(int j=0;j<n-1;j++)  // initializing the graph with weights 
 	{
 		cin>>v1>>v2>>w;  
 		G[v1][v2]=w;
 		G[v2][v1]=w;
 	}
 	//cout<<"\nEnter robot positions:\n";
-	for(int j2=0;j2<k;j2++)  //getting the position of the robots
+	for(int j=0;j<k;j++)  //getting the position of the robots
 	{	
-		cin>>RobotPosition[j2];
+		cin>>RobotPosition[j];
 	}
 	int time;
 	//cout<<"Callinng MIN_EDGE_CUTTING_TIME function";
