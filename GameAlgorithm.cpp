@@ -1,155 +1,251 @@
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
-//#define N 1000
-
-vector < vector<int>> G;  // adjacency matrix of the graph which stores the weight b/w the vertices
-vector<int> path;	//path between any two robots
-int i=0;			//counter for path[i]
-int flag = 0;   // to check whether the path is found or not
-
-void find_path(int n, int a, int b)	//n = total no. of vertices		a = robo1		b = robo2
+int minTime = 0;
+struct SET
 {	
-	if(i>=2)
-	{	if(path[i-2]!=a)
-		{
-			
-			path[i] = a;
-			if(a!=b)
-			{
-				for(int j=0; j<n; j++)
-				{	
-			
-					if(G[a][j]>0)
-					{
-					//	if(flag1==0)
-							i++;
-					
-							find_path(n,j,b);
-							if(flag==0)
-								i--;
-							else 
-								return;
-					//	}
-					//	flag1=0;
-					}
-				}
-			}
-			else 
-				flag++;
-		}
-	}
-	else{
-		path[i]=a;
-		if(a!=b){
-			for(int j=0; j<n; j++)
-				{	
-			
-					if(G[a][j]>0)
-					{
-					//	if(flag1==0)
-							i++;
-					
-							find_path(n,j,b);
-							if(flag==0)
-								i--;
-							else 
-								return;
-					//	}
-					//	flag1=0;
-					}
-				}
-		}
-		else
-			flag++;
-	}
+	int data;
+	int rank;
+	int weight;
+	SET *parent;
+	SET *p;
+};
+
+SET* MAKE_SET(int v)  // function to make every vertex into a set
+{
+	SET *ptr=new SET;
+	ptr->data=v;
+	ptr->rank=0;
+	ptr->weight=0;
+	ptr->parent=ptr;
+	ptr->p=ptr;
+	return ptr;
 }
 
-
-/* function to delete the minimum cost edge in the given path and delete if*/
-int DELETE_MIN(vector<int> &Path, int PathSize)
+void merge(int arr[], int l, int m, int r)
 {
-	int v1 = Path[0], v2 = Path[1], w = G[Path[0]][Path[1]]; // (v1,v2) is an edge in the path corresponding to the minimum weight in the path
-	for(int c=0 ; c<PathSize-1 ; c++)  
-	{
-		if (G[Path[c]][Path[c+1]]<w)  // traving the path and checking if any weight in the path is smaller than the weight w which is the smallest path
-		{
-			// if the weight is smaller than w then updating v1 and v2 to be the edge vertices corresponding to that edge and w to be the weight of that edge
-			// as (v1,v2) is the edge corresponding to the smallest weight
-
-			v1 = Path[c];   	
-			v2 = Path[c+1];
-			w = G[Path[c]][Path[c+1]];
-		}
-	}
-	G[v1][v2] = 0;  // destroying the lowest weighted edge in the path
-	G[v2][v1] = 0;
-	return w;  // returning the smallest weight in the path
-}
-/**/
-
-/*function for finding the minimum edge in the for all the paths b/w the robot positions and delete the edges 
-and return the minimum time required to delete all the edges*/
-int MIN_EDGE_CUTTING_TIME(int k, vector<int> RobotPosition, int no_of_vertex)
-{
-	//cout<<"\nEntering MIN_EDGE_CUTTING_TIME function\n";
-	int MinTime=0;  // variable to store the time taken for destroying the all edges to save kingdom
-
-	for(int l=0;l<k-1;l++)  // loops to find all the possible paths to other robot located cities from the city
-	{ 						// at ith position of the RobotPosition array in which other robot is located
-		for(int q=l+1;q<k;q++)
-		{	//int PathSize = 0;  // variable to store the size of the path array below
-			//cout<<"\ncalling find_path in MIN_EDGE_CUTTING_TIME\n";
-			find_path(no_of_vertex,RobotPosition[l],RobotPosition[q]);  // getting the path of robot at i index of RobotPosition array and
-			//cout<<"\nsuccessfully computed find_path in MIN_EDGE_CUTTING_TIME\n";						// at j index of RobotPosition array
-			//cout<<"\ncalling DELETE_MIN...\n";
-			if(i>0)
-				MinTime += DELETE_MIN(path,i+1);   // function to delete the minimun cost edge in the path traced above
-			//cout<<"\nsuccessfully completed DELETE_MIN in MIN_EDGE_CUTTING_TIME\n";
-			i=0;		// reset i to 0 for path[i] in find_path
-			flag=0;
-		}
-	}	
-	return MinTime;
-}
-
-int main()
-{
-	//cout<<"\nEnter no. of vertices:\n";
-	long n, k;  // n is the no of vertices and k is the no of bots 
-	cin>>n;
-	//cout<<"\nEnter no. of robots\n";
-	cin>>k;
-
-	vector<int> RobotPosition;  // to store the positions of the robots in the kingdom
-	//set size if G, RobotPosition, Path
-	G.resize(n);
-    for(int i=0; i<n;i++)
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 =  r - m;
+ 
+    /* create temp arrays */
+    int L[n1], R[n2];
+ 
+    /* Copy data to temp arrays L[] and R[] */
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1+ j];
+ 
+    /* Merge the temp arrays back into arr[l..r]*/
+    i = 0; // Initial index of first subarray
+    j = 0; // Initial index of second subarray
+    k = l; // Initial index of merged subarray
+    while (i < n1 && j < n2)
     {
-        G[i].resize(n);
+        if (L[i] <= R[j])
+        {
+            arr[k] = L[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
     }
-	path.resize(n);
-    RobotPosition.resize(k);
+ 
+    /* Copy the remaining elements of L[], if there
+       are any */
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+ 
+    /* Copy the remaining elements of R[], if there
+       are any */
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+ 
+/* l is for left index and r is right index of the
+   sub-array of arr to be sorted */
+void mergeSort(int arr[], int l, int r)
+{
+    if (l < r)
+    {
+        // Same as (l+r)/2, but avoids overflow for
+        // large l and h
+        int m = l+(r-l)/2;
+ 
+        // Sort first and second halves
+        mergeSort(arr, l, m);
+        mergeSort(arr, m+1, r);
+ 
+        merge(arr, l, m, r);
+    }
+}
 
-	int v1, v2, w, r; // (v1,v2) is an edge of the graph
-	//cout<<"\nEnter edges\n";
-	for(int j=0;j<n-1;j++)  // initializing the graph with weights 
+// A recursive binary search function. It returns location of x in
+// given array arr[l..r] is present, otherwise -1
+int binarySearch(int arr[], int l, int r, int x)
+{
+   if (r >= l)
+   {
+        int mid = l + (r - l)/2;
+
+        // If the element is present at the middle itself
+        if (arr[mid] == x)  return mid;
+
+        // If element is smaller than mid, then it can only be present
+        // in left subarray
+        if (arr[mid] > x) return binarySearch(arr, l, mid-1, x);
+
+        // Else the element can only be present in right subarray
+        return binarySearch(arr, mid+1, r, x);
+   }
+
+   // We reach here when element is not present in array
+   return -1;
+}
+
+
+int FIND_SET(int vertex, SET *Sets[])  // to find the representative element of the set
+{
+	SET *ptr=Sets[vertex];
+	while(ptr->p!=ptr)
+		ptr=ptr->p;
+	return ptr->data;
+}
+
+
+void UNITE(SET *Sets[], int u, int v, int w, int p) {
+	int weight, weight1 = w;
+	SET *ptr1 = Sets[u];
+	SET *ptr = Sets[v];
+	SET *temp;
+	while(ptr != ptr1)
 	{
-		cin>>v1>>v2>>w;  
-		G[v1][v2]=w;
-		G[v2][v1]=w;
+		temp = ptr->parent;
+		weight = weight1;
+		weight1	= ptr->weight;
+		ptr->parent = ptr1;
+		ptr->p=Sets[p];
+		ptr->weight = weight;
+		ptr1 = ptr;
+		ptr = temp;
 	}
-	//cout<<"\nEnter robot positions:\n";
-	for(int j=0;j<k;j++)  //getting the position of the robots
-	{	
-		cin>>RobotPosition[j];
+}
+
+
+bool CHECKROBOT(int v, int RobotPosition[], int k, SET *Sets[]) {
+	if(Sets[v]->rank>0)
+		return 1;
+	else {
+		/*for(int i=0;i<k;i++)
+			if(RobotPosition[i] == v)
+			{		
+				return 1;
+			}*/
+		if(binarySearch(RobotPosition,0,k-1,v)!=-1)
+		{	Sets[v]->rank+=1;
+			return 1;
+		}
 	}
-	int time;
-	//cout<<"Callinng MIN_EDGE_CUTTING_TIME function";
-	time = MIN_EDGE_CUTTING_TIME(k,RobotPosition,n);
-	cout<<time;
-	//system("pause");
+	return 0;	
+}
+
+int FIND_MIN(int u, int v, int w, SET *Sets[], int p1, int p2) {
+	int min = w, data;
+	SET *ptr1, *ptr2;
+	ptr1 = Sets[u];
+	ptr2 = Sets[v];
+	int j=0;
+	while(ptr1->parent != ptr1)
+	{
+		if(ptr1->weight<min) {
+			min = ptr1->weight;
+			data = ptr1->data;
+		}
+		ptr1 = ptr1->parent;
+	}
+	while(ptr2->parent != ptr2)
+	{
+		if(ptr2->weight<min) {
+			min = ptr2->weight;
+			data = ptr2->data;
+			j++;
+		}
+		ptr2 = ptr2->parent;
+	}
+	if(min == w)
+		return w;
+	else {
+		Sets[data]->parent = Sets[data];
+		Sets[data]->weight = 0;
+		if(j>0)	
+			UNITE(Sets,u,v,w,p1);
+		else
+			UNITE(Sets,v,u,w,p2);
+	}
+	return min;
+}
+
+void UNION(int u, int v, SET *Sets[], int EDGES[][3], int w, int RobotPosition[], int k) {
+	int p1 = FIND_SET(u,Sets);
+	int p2 = FIND_SET(v,Sets);
+	bool c1 = CHECKROBOT(p1,RobotPosition,k,Sets);
+	bool c2 = CHECKROBOT(p2,RobotPosition,k,Sets); 
+	if(c1 && c2) {
+		minTime += FIND_MIN(u,v,w,Sets,p1,p2);
+	}
+	else if(c1) {
+		UNITE(Sets,u,v,w,p1);
+	}
+		 else {
+			UNITE(Sets,v,u,w,p2);
+		 }
+}
+
+
+void DIVIDE(int n, int EDGES[][3], int RobotPosition[], int k) {
+	SET *Sets[n];
+	for(int i=0;i<n;i++)
+		Sets[i] = MAKE_SET(i);
+	int u, v, w;   // u, v is an edge of the graph
+	for(int i=0;i<n-1;i++)
+	{
+		u = EDGES[i][0];
+		v = EDGES[i][1];
+		w = EDGES[i][2];
+		UNION(u,v,Sets,EDGES,w,RobotPosition,k);
+	}	
+}
+
+int main() {
+	int n, k;    // n is the no of vertices and k is the no of robots
+	cin>>n>>k;
+	int v1, v2, w;   // (v1,v2) is an edge of the graph and w is the weight of the edge
+	int EDGES[n-1][3];
+	for(int i=0;i<n-1;i++) {
+		cin>>v1>>v2>>w;  // inserting edges into a 2-D array along with weights to store the graph
+		EDGES[i][0] = v1;
+		EDGES[i][1] = v2;
+		EDGES[i][2] = w;
+	}
+	int RobotPosition[k];
+	for(int i=0;i<k;i++)
+		cin>>RobotPosition[i];
+	mergeSort(RobotPosition,0,k-1);
+	DIVIDE(n,EDGES,RobotPosition,k);
+	cout<<minTime;
 	return 0;
 }
