@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>RoboAttack</title>
+	<style>
+	 * { padding: 0; margin: 0; } 
+	canvas { background: #eee; display: block; margin: 0 auto; }
+	</style>
+</head>
+<body>
+<canvas id="map" width="480" height="320"></canvas>
+<script>
+var Canvas = document.getElementById("map");
+var ctx = Canvas.getContext("2d");
+var x = 200;
+var y = 100;
+var ballRadius = 10;
+var Center = [];
+var i=0;
+var PacManX = x;
+var PacManY = y;
+
+//document.addEventListener("keydown", keyDownHandler, false);
+//document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler() {
+
+}
+
+function creatNode() {
+	Center[i] = { cx: x, cy: y};
+	ctx.beginPath();
+	ctx.arc(x,y,ballRadius,0,Math.PI*2);
+	ctx.fillStyle = "#0095DD";
+	ctx.fill();
+	ctx.closePath();
+	x = x+70;
+	i++;
+}
+
+function createPath() {
+	ctx.beginPath();
+	ctx.moveTo(Center[i-2].cx,Center[i-2].cy);
+	ctx.lineTo(Center[i-1].cx,Center[i-1].cy);
+	ctx.stroke();
+}
+
+function createPacMan() {
+	ctx.beginPath();
+	ctx.arc(PacManX,PacManY,ballRadius+3,0,Math.PI*3/4 + Math.PI);
+	ctx.lineTo(PacManX,PacManY);
+	ctx.stroke();
+	ctx.closePath();
+}
+
+function setMap() {
+	creatNode();
+	creatNode();
+	createPath();
+	creatNode();
+	createPath();
+	createPacMan();
+	requestAnimationFrame();
+}
+
+setMap();
+
+</script>
+</body>
+</html>
