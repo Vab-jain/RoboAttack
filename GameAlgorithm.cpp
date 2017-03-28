@@ -2,6 +2,7 @@
 
 using namespace std;
 
+int no_of_edges;
 int minTime = 0;
 struct SET
 {	
@@ -186,8 +187,9 @@ int FIND_MIN(int u, int v, int w, SET *Sets[], int p1, int p2) {
 		}
 		ptr2 = ptr2->parent;
 	}
-	if(min == w)
+	if(min == w) {
 		return w;
+	}
 	else {
 		Sets[data]->parent = Sets[data];
 		Sets[data]->weight = 0;
@@ -199,9 +201,11 @@ int FIND_MIN(int u, int v, int w, SET *Sets[], int p1, int p2) {
 	return min;
 }
 
-void UNION(int u, int v, SET *Sets[], int EDGES[][3], int w, int RobotPosition[], int k) {
+void UNION(int u, int v, SET *Sets[], wint w, int RobotPosition[], int k) {
 	int p1 = FIND_SET(u,Sets);
 	int p2 = FIND_SET(v,Sets);
+	if(p1 == p2)
+	      return;
 	bool c1 = CHECKROBOT(p1,RobotPosition,k,Sets);
 	bool c2 = CHECKROBOT(p2,RobotPosition,k,Sets); 
 	if(c1 && c2) {
@@ -221,21 +225,21 @@ void DIVIDE(int n, int EDGES[][3], int RobotPosition[], int k) {
 	for(int i=0;i<n;i++)
 		Sets[i] = MAKE_SET(i);
 	int u, v, w;   // u, v is an edge of the graph
-	for(int i=0;i<n-1;i++)
+	for(int i=0;i<no_of_edges;i++)
 	{
 		u = EDGES[i][0];
 		v = EDGES[i][1];
 		w = EDGES[i][2];
-		UNION(u,v,Sets,EDGES,w,RobotPosition,k);
+		UNION(u,v,Sets,w,RobotPosition,k);
 	}	
 }
 
 int main() {
 	int n, k;    // n is the no of vertices and k is the no of robots
-	cin>>n>>k;
+	cin>>n>>k>>no_of_edges;
 	int v1, v2, w;   // (v1,v2) is an edge of the graph and w is the weight of the edge
-	int EDGES[n-1][3];
-	for(int i=0;i<n-1;i++) {
+	int EDGES[no_of_edges][3];
+	for(int i=0;i<no_of_edges;i++) {
 		cin>>v1>>v2>>w;  // inserting edges into a 2-D array along with weights to store the graph
 		EDGES[i][0] = v1;
 		EDGES[i][1] = v2;
@@ -247,5 +251,6 @@ int main() {
 	mergeSort(RobotPosition,0,k-1);
 	DIVIDE(n,EDGES,RobotPosition,k);
 	cout<<minTime;
+	system("pause");
 	return 0;
 }
