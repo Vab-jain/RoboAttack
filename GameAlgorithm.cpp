@@ -201,7 +201,7 @@ int FIND_MIN(int u, int v, int w, SET *Sets[], int p1, int p2) {
 	return min;
 }
 
-void UNION(int u, int v, SET *Sets[], wint w, int RobotPosition[], int k) {
+void UNION(int u, int v, SET *Sets[], int w, int RobotPosition[], int k) {
 	int p1 = FIND_SET(u,Sets);
 	int p2 = FIND_SET(v,Sets);
 	if(p1 == p2)
