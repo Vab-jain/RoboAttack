@@ -1,3 +1,5 @@
+function DestroyPath(noOfVertices,noOfRobots,NoOfEdges,edges,robotPosition) {
+
 var NoOfEdges;
 var minTime = 0; /* Minimum time required to destroy the paths */
 
@@ -104,6 +106,8 @@ function Unite(NewGraph,u,v,w,p) {
 	var weight, weight1 = w;
 	var ptr1 = NewGraph[u];
 	var ptr = NewGraph[v];
+	console.log(ptr);
+	console.log(ptr1);
 	var temp;
 	/* loop which attaches each element of the second set to the 
 	 * first set untill we get broken edge which has its weight set to 0
@@ -206,7 +210,7 @@ function FindMin(u,v,w,NewGraph,p1,p2) {
 function Union(u,v,NewGraph,w,RobotPosition,k) {
 	/* finding the representative elements */
 	var p1 = FindSet(u,NewGraph), p2 = FindSet(v,NewGraph);
-
+	console.log("p1 : " + p1 + "p2 : " + p2);
 	if(p1 === p2) {   /* it is the case when multiple paths exist b/w two cities */
 		/* In this case instead of creating the given edge, we add the weight of the 
 		 * edge to every edge which creates a parallel path to that edge. */
@@ -277,36 +281,40 @@ function Divide(n,Edges,RobotPosition,k) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
 var n, k;
-n = 5;//window.prompt("Enter n ");
-k = 2;//window.prompt("Enter k ");;
-NoOfEdges = 7;//window.prompt("Enter NoOfEdges ");
-var Edges = [[1,0,1],[1,2,1],[2,3,2],[3,1,1],[3,0,2],[2,0,2],[0,4,12]];
-// for(m=0;m<NoOfEdges;m++) {
-// 	var edge = [];
-// 	edge[0] = window.prompt("Enter v1 ");
-// 	edge[1] = window.prompt("Enter v2 ");
-// 	edge[2] = window.prompt("Enter w ");
-// 	Edges.push(edge);
-// }
-var RobotPosition = [3,4];
-// for(q=0;q<k;q++){
-// 	RobotPosition[q] = window.prompt("Enter RobotPosition ");
-// }
-
-//RobotPosition.push(0); RobotPosition.push(3);RobotPosition.push(4);
-RobotPosition = mergeSort(RobotPosition);
-console.log(RobotPosition);
+n = noOfVertices;//window.prompt("Enter n ");
+k = noOfRobots;//window.prompt("Enter k ");;
+NoOfEdges = NoOfEdges;//window.prompt("Enter NoOfEdges ");
+var Edges = edges;
+var RobotPosition = mergeSort(robotPosition);
 Divide(n,Edges,RobotPosition,k);
+console.log(Edges);
 console.log("Mintime : " + minTime);
+
+}
+
+
+
+
+// var n, k;
+// n = 5;//window.prompt("Enter n ");
+// k = 2;//window.prompt("Enter k ");;
+// NoOfEdges = 7;//window.prompt("Enter NoOfEdges ");
+// var Edges = [[1,0,1],[1,2,1],[2,3,2],[3,1,1],[3,0,2],[2,0,2],[0,4,12]];
+// // for(m=0;m<NoOfEdges;m++) {
+// // 	var edge = [];
+// // 	edge[0] = window.prompt("Enter v1 ");
+// // 	edge[1] = window.prompt("Enter v2 ");
+// // 	edge[2] = window.prompt("Enter w ");
+// // 	Edges.push(edge);
+// // }
+// var RobotPosition = [3,4];
+// // for(q=0;q<k;q++){
+// // 	RobotPosition[q] = window.prompt("Enter RobotPosition ");
+// // }
+
+// //RobotPosition.push(0); RobotPosition.push(3);RobotPosition.push(4);
+// RobotPosition = mergeSort(RobotPosition);
+// console.log(RobotPosition);
+// Divide(n,Edges,RobotPosition,k);
+// console.log("Mintime : " + minTime);

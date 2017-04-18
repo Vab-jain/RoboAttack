@@ -13,9 +13,9 @@ var Engine = (function(global) {
 	var doc = global.document, canvas = doc.createElement('canvas'), ctx = canvas.getContext('2d');  
 
 	/*setting the height and width of the canvas*/
-	canvas.width = 600;
-    canvas.height = 600;
-    canvas.style.backgroundColor = 'rgba(158, 167, 184, 0.2)';
+	canvas.width = 1000;
+    canvas.height = 800;
+    //canvas.style.backgroundColor = 'rgba(158, 167, 184, 0.2)';
     doc.body.appendChild(canvas);
 
 	/*constructor function to create a objects with their definition in the function
@@ -25,6 +25,9 @@ var Engine = (function(global) {
 		/* coordinates property(data member) of the object */
 		this.coordinates = [];
 		this.coordinatesRow = [];
+		this.minCost;
+		this.Edges = [];
+
 	};	
 
 	/* member function of the class to draw the city of the map on to canvas */
@@ -43,9 +46,12 @@ var Engine = (function(global) {
 
 	/*function to create the roades of the city on the canvas
 	*/
-	Map.prototype.drawEdges = function(triangles) {
-		for(j=0; j < triangles.length-2; j=j+3) {
-			this.drawTriangle(triangles[j],triangles[j+1],triangles[j+2]);
+	Map.prototype.drawEdges = function() {
+		for(j=0; j < this.Edges.length; j++) {
+			ctx.moveTo(this.coordinates[this.Edges[j][0]][0],this.coordinates[this.Edges[j][0]][1]);
+			ctx.lineTo(this.coordinates[this.Edges[j][1]][0],this.coordinates[this.Edges[j][1]][1]);
+			ctx.stroke();
+			//this.drawTriangle(triangles[j],triangles[j+1],triangles[j+2]);
 		}
 	}
 
@@ -75,9 +81,10 @@ var Engine = (function(global) {
 	 */
 	Map.prototype.createVertices = function() {
 		console.log("creating vertices");
-		var minX = 30, maxX = (canvas.width/4)-30, minY = 30, maxY = (canvas.height/3)-30;
-		for(m=0; m < 3; m++){
-			for(i=0; i < 4; i++) {
+		var h = 3, v = 2, minGap = 30;
+		var minX = minGap, maxX = (canvas.width/h)-minGap, minY = minGap, maxY = (canvas.height/v)-minGap;
+		for(m=0; m < v; m++){
+			for(i=0; i < h; i++) {
 				var vertex = [];
 				console.log(minX + "," + maxX);
 				vertex[0] = Math.floor((Math.random() * (maxX-minX)) + minX);
@@ -86,14 +93,29 @@ var Engine = (function(global) {
 				this.coordinates.push(vertex);
 				this.coordinatesRow.push(m+1);
 				console.log("vertex : " + vertex[0] + "," + vertex[1]);
-				minX = maxX + 30;
-				maxX = minX + (canvas.width/4)-30;
+				minX = maxX + minGap;
+				maxX = minX + (canvas.width/h)-minGap;
 			}
-			minY = maxY + 30;
-			maxY = minY + (canvas.height/3)-30;
-			maxX = (canvas.width/4)-30;
-			minX = 30;
+			minY = maxY + minGap;
+			maxY = minY + (canvas.height/v)-minGap;
+			maxX = (canvas.width/h)-minGap;
+			minX = minGap;
 		}
+	}
+
+	/* calculates the edges of the graph and their corresponding weight 
+	 * and stores them in the Edges array. */
+	Map.prototype.createEdges = function(triangles) {
+		for(i=0 ; i<triangles.length-2 ; i=i+3) {
+			this.Edges.push([triangles[i],triangles[i+1],this.calculateWeight(this.coordinates[triangles[i]],this.coordinates[triangles[i+1]])]);
+			this.Edges.push([triangles[i+1],triangles[i+2],this.calculateWeight(this.coordinates[triangles[i+1]],this.coordinates[triangles[i+2]])]);
+			this.Edges.push([triangles[i+2],triangles[i],this.calculateWeight(this.coordinates[triangles[i+2]],this.coordinates[triangles[i]])]);
+		}
+	}
+
+	/* calculates the weight b/w two edges */
+	Map.prototype.calculateWeight = function(v1,v2) {
+		return (Math.floor(Math.sqrt(Math.pow((v1[0]-v2[0]),2) + Math.pow((v1[1]-v2[1]),2)))%10);
 	}
 
 	/* Assign the canvas' context object to the global variable (the window
@@ -110,9 +132,11 @@ var Engine = (function(global) {
 	map.drawVertices();
 	console.log(map.coordinates);
 	console.log(map.coordinatesRow);
-	console.log(Delaunay.triangulate(map.coordinates));
+	console.log("triangles : " + Delaunay.triangulate(map.coordinates));
 	console.log(map.coordinates.length);
 	console.log((Delaunay.triangulate(map.coordinates)).length);
-	map.drawEdges(Delaunay.triangulate(map.coordinates));
+	map.createEdges(Delaunay.triangulate(map.coordinates));
+	map.drawEdges();
+	DestroyPath(6,3,map.Edges.length,map.Edges,[1,2,4,0]);
 
 })(this);
